@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbc064c2c9a2a4444945faf59f66da3e, type: 3}
   m_Name: EnemyAssault
   m_EditorClassIdentifier: 
-  Speed: 0
-  Damage: 0
-  RateOfFire: 0
-  MagazineSize: 0
+  Speed: 5
+  Damage: 7
+  RateOfFire: 130
+  MagazineSize: 30
+  ShotsPerBurst: 3
+  BurstDelayMin: 1000
+  BurstDelayMax: 3000
+  ReloadSpeed: 2600
+  Accuracy: 0.35

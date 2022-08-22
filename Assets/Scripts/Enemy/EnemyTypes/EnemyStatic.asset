@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: EnemyStatic
   m_EditorClassIdentifier: 
   Speed: 0
-  Damage: 0
-  RateOfFire: 0
-  MagazineSize: 0
+  Damage: 3
+  RateOfFire: 300
+  MagazineSize: 30
+  ShotsPerBurst: 3
+  BurstDelayMin: 1000
+  BurstDelayMax: 3000
+  ReloadSpeed: 3000
+  Accuracy: 0.2
