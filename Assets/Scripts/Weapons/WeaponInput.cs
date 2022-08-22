@@ -9,36 +9,47 @@ public class WeaponInput : MonoBehaviour
     [SerializeField] Transform _aimTarget;
     [SerializeField] Transform _shootPoint;
     [SerializeField] WeaponScriptableObject _weaponInfo;
+    [SerializeField] AudioClip _shootSound;
+    [SerializeField] ParticleSystem _particlePoint;
     Camera _camera;
     LineRenderer _aimPointer;
     Vector2 _screenBounds;
+    AudioSource _audioSource;
 
     int _bulletsLeft;
     bool _shootType;
 
     public WeaponScriptableObject WeaponInfo {get {return _weaponInfo;}}
 
+    // Called when the object is loaded
     void Awake()
     {
         _bulletsLeft = _weaponInfo.MagazineSize;
         _aimPointer = GetComponent<LineRenderer>();
         _camera = Camera.main;
         _aimPointer.positionCount = 2;
+        _audioSource = GetComponent<AudioSource>();
+        //_audioSource.clip = _shootSound;
         
     }
 
+    // Called every frame
     void Update()
     {   
-        // Determine if firing happens when the fire button is held or when its pressed
-        
+        ShootInput();
+        ReloadInput();
+        AimToTarget();
+    }
+
+    void ShootInput()
+    {   // Determine if firing happens when the fire button is held or when its pressed
         if (_weaponInfo.FireType == FireType.AUTO) _shootType = Input.GetButton("Fire1");
         else _shootType = Input.GetButtonDown("Fire1");
+
         if (_shootType)
         {
             Shoot();
         }
-
-        AimToTarget();
     }
 
     async void Shoot()
@@ -49,6 +60,8 @@ public class WeaponInput : MonoBehaviour
         }
 
         PlayerController.Instance.Shooting = true;
+        _audioSource.PlayOneShot(_shootSound);
+        _particlePoint.Play();
         RaycastHit rayHit;
         Vector3 direction = _shootPoint.position - _aimTarget.position;
         direction.z = 0;
@@ -78,12 +91,22 @@ public class WeaponInput : MonoBehaviour
         _aimPointer.SetPosition(1, _aimTarget.position);
     }
 
+    void ReloadInput()
+    {
+        if (Input.GetButtonDown("Reload"))
+        {
+            Reload();
+        }
+    }
+
     async void Reload()
     {
+        if (PlayerController.Instance.Reloading) return;
         PlayerController.Instance.Reloading = true;
         await Task.Delay(_weaponInfo.ReloadSpeed);
         PlayerController.Instance.Reloading = false;
-        _weaponInfo.MaxAmmo -= (_weaponInfo.MagazineSize - _bulletsLeft);
+        _bulletsLeft = _weaponInfo.MagazineSize;
+        //_weaponInfo.MaxAmmo -= (_weaponInfo.MagazineSize - _bulletsLeft);
     }
 
 }
